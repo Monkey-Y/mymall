@@ -55,7 +55,7 @@ public class UserController {
      * @Param [session]
      * @return com.mmall.common.ServerResponse<java.lang.String>
      **/
-    @RequestMapping(value = "logout.do",method = RequestMethod.GET)
+    @RequestMapping(value = "logout.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> logout(HttpSession session){
         session.removeAttribute(Const.CURRENT_USER);
@@ -69,7 +69,7 @@ public class UserController {
      * @Param user
      * @return com.mmall.common.ServerResponse<java.lang.String>
      **/
-    @RequestMapping(value = "register.do",method = RequestMethod.GET)
+    @RequestMapping(value = "register.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> register(User user){
         return iUserService.register(user);
@@ -83,7 +83,7 @@ public class UserController {
       *@param type 根据是username还是email来判断str使用哪个sql
       *@return com.mmall.common.ServerResponse<java.lang.String>
     **/
-    @RequestMapping(value = "check_valid.do",method = RequestMethod.GET)
+    @RequestMapping(value = "check_valid.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> checkValid(String str, String type) {
         return iUserService.checkValid(str, type);
@@ -96,7 +96,7 @@ public class UserController {
       *@param session
       *@return com.mmall.common.ServerResponse<com.mmall.pojo.User>
     **/
-    @RequestMapping(value = "get_user_info.do",method = RequestMethod.GET)
+    @RequestMapping(value = "get_user_info.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> getUserInfo(HttpSession session) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
@@ -113,7 +113,7 @@ public class UserController {
       *@param username
       *@return com.mmall.common.ServerResponse<java.lang.String>
     **/
-    @RequestMapping(value = "forget_get_question.do",method = RequestMethod.GET)
+    @RequestMapping(value = "forget_get_question.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetGetQuestion(String username) {
         return iUserService.selectQuestion(username);
@@ -125,13 +125,13 @@ public class UserController {
       *@Date 2020/2/12 20:46
       *@param username
       *@param question
-      *@param anwser
+      *@param answer
       *@return com.mmall.common.ServerResponse<java.lang.String>
     **/
-    @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.GET)
+    @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> forgetCheckAnswer(String username, String question, String anwser) {
-        return iUserService.checkAnwser(username,question,anwser);
+    public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
+        return iUserService.checkAnswer(username,question,answer);
     }
 
     /**
@@ -143,7 +143,7 @@ public class UserController {
       *@param forgetToken
       *@return com.mmall.common.ServerResponse<java.lang.String>
     **/
-    @RequestMapping(value = "forget_reset_password.do",method = RequestMethod.GET)
+    @RequestMapping(value = "forget_reset_password.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
         return iUserService.forgetResetPassword(username, passwordNew, forgetToken);
@@ -158,7 +158,7 @@ public class UserController {
       *@param passwordNew
       *@return com.mmall.common.ServerResponse<java.lang.String>
     **/
-    @RequestMapping(value = "reset_password.do",method = RequestMethod.GET)
+    @RequestMapping(value = "reset_password.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> resetPassword(HttpSession session, String passwordOld, String passwordNew) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
@@ -176,7 +176,7 @@ public class UserController {
       *@param user
       *@return com.mmall.common.ServerResponse<com.mmall.pojo.User>
     **/
-    @RequestMapping(value = "update_information.do",method = RequestMethod.GET)
+    @RequestMapping(value = "update_information.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> update_information(HttpSession session, User user) {
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
@@ -193,7 +193,6 @@ public class UserController {
         return response;
     }
 
-
     /**
       *@Author Yangh
       *@Description //TODO 获取当前登录用户的详细信息，并强制登录
@@ -201,7 +200,7 @@ public class UserController {
       *@param session
       *@return com.mmall.common.ServerResponse<com.mmall.pojo.User>
     **/
-    @RequestMapping(value = "get_information.do",method = RequestMethod.GET)
+    @RequestMapping(value = "get_information.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> get_information(HttpSession session){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);

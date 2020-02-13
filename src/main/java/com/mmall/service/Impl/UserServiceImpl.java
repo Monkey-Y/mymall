@@ -59,7 +59,7 @@ public class UserServiceImpl implements IUserService {
 //        if (resultCount > 0){
 //            return ServerResponse.createByErrorMessage("email已存在");
 //        }
-        validReqonse = this.checkValid(user.getUsername(), Const.EMAIL);
+        validReqonse = this.checkValid(user.getEmail(), Const.EMAIL);
         if (!validReqonse.isSuccess()) {
             return validReqonse;
         }
@@ -95,7 +95,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     public ServerResponse selectQuestion(String username) {
-        ServerResponse validResponse = this.checkValid(username, Const.CURRENT_USER);
+        ServerResponse validResponse = this.checkValid(username, Const.USERNAME);
         if (validResponse.isSuccess()) {
             return ServerResponse.createByErrorMessage("用户不存在");
         }
@@ -106,8 +106,8 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByErrorMessage("找回密码的问题是空的");
     }
 
-    public ServerResponse<String> checkAnwser(String username, String question, String anwser) {
-        int resultCount = userMapper.checkAnswer(username, question, anwser);
+    public ServerResponse<String> checkAnswer(String username, String question, String answer) {
+        int resultCount = userMapper.checkAnswer(username, question, answer);
         if (resultCount>0) {
             //说明问题及问题答案是这个用户的，并且是正确的
             String forgetToken = UUID.randomUUID().toString();
@@ -121,7 +121,7 @@ public class UserServiceImpl implements IUserService {
         if (StringUtils.isBlank(forgetToken)) {
             return ServerResponse.createByErrorMessage("参数错误，token需要传递");
         }
-        ServerResponse validResponse = this.checkValid(username, Const.CURRENT_USER);
+        ServerResponse validResponse = this.checkValid(username, Const.USERNAME);
         if (validResponse.isSuccess()) {
             return ServerResponse.createByErrorMessage("用户不存在");
         }

@@ -48,7 +48,7 @@
     select count(1) from mmall_user
     where username = #{username}
     and question = #{question}
-    and anwser = #{anwser}
+    and answer = #{answer}
   </select>
   <select id="checkPassword" resultType="int" parameterType="map">
     SELECT
