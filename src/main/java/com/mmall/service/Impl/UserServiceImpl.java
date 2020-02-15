@@ -187,4 +187,20 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createBySuccess(user);
     }
 
+    //backend
+    /**
+      *@Author Yangh
+      *@Description //TODO 校验是否是管理员
+      *@Date 2020/2/14 16:35
+      *@param user
+      *@return com.mmall.common.ServerResponse
+    **/
+    public ServerResponse checkAdminRole(User user){
+        if (user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN) {
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
+    }
+
+
 }
