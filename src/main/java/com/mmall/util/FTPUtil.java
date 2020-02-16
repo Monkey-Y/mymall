@@ -29,6 +29,7 @@ public class FTPUtil {
     public static boolean uploadFile(List<File> fileList) throws IOException {
         FTPUtil ftpUtil = new FTPUtil(ftpIp,21,ftpUser,ftpPass);
         logger.info("开始连接ftp服务器");
+        //存到文件服务器的img文件夹下
         boolean result = ftpUtil.uploadFile("img",fileList);
         logger.info("开始连接ftp服务器,结束上传,上传结果:{}");
         return result;
@@ -44,7 +45,9 @@ public class FTPUtil {
                 ftpClient.changeWorkingDirectory(remotePath);
                 ftpClient.setBufferSize(1024);
                 ftpClient.setControlEncoding("UTF-8");
+                //文件类型设置为二进制类型，防止乱码
                 ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+                //打开本地被动模式
                 ftpClient.enterLocalPassiveMode();
                 for(File fileItem : fileList){
                     fis = new FileInputStream(fileItem);
@@ -77,13 +80,6 @@ public class FTPUtil {
         }
         return isSuccess;
     }
-
-
-
-
-
-
-
 
 
 
