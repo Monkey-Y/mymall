@@ -2,9 +2,7 @@ package com.mmall.vo;
 
 import java.math.BigDecimal;
 
-/**
- * Created by geely
- */
+
 public class CartProductVo {
 
 //结合了产品和购物车的一个抽象对象
@@ -19,7 +17,7 @@ public class CartProductVo {
     private BigDecimal productPrice;
     private Integer productStatus;
     private BigDecimal productTotalPrice;
-    private Integer productStock;
+    private Integer productStock;//产品的库存
     private Integer productChecked;//此商品是否勾选
 
     private String limitQuantity;//限制数量的一个返回结果

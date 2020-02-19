@@ -31,6 +31,7 @@
     delete from mmall_shipping
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <!-- 原本没有后面两个参数，返回的是生效的行数，加上后面两个参数，就可以通过shipping.getId()获取到id值了 -->
   <insert id="insert" parameterType="com.mmall.pojo.Shipping" useGeneratedKeys="true" keyProperty="id">
     insert into mmall_shipping (id, user_id, receiver_name, 
       receiver_phone, receiver_mobile, receiver_province, 

@@ -164,6 +164,7 @@
   </update>
 
 
+  <!-- selectCartProductCount的返回值是int，如果sum(quantity)为空，空是不能赋给基本类型int的，要么把返回类型int改为Integer，要么用下面IFNULL的方式，如果sum(quantity)为空则返回默认值0 -->
   <select id="selectCartProductCount" parameterType="int" resultType="int">
     select IFNULL(sum(quantity),0) as count from mmall_cart where user_id = #{userId}
   </select>
