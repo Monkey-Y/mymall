@@ -13,8 +13,6 @@ public class TokenCache {
 
     private static Logger logger = LoggerFactory.getLogger(TokenCache.class);
 
-    public static final String TOKEN_PREFIX = "token_";
-
     //声明一个静态内存块，LoadingCache是guava中的。本地缓存初始化容量为1000，最大值是10000，超过10000会使用LRU算法进行清除，有效期是12小时
     //LRU算法
     private static LoadingCache<String,String> localCache = CacheBuilder.newBuilder().initialCapacity(1000).maximumSize(10000).expireAfterAccess(12, TimeUnit.HOURS)
