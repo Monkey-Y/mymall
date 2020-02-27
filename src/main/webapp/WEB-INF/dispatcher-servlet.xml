@@ -8,8 +8,10 @@
 	http://www.springframework.org/schema/mvc
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <!--扫描注解-->
-    <context:component-scan base-package="com.mmall" annotation-config="true"/>
+    <!--只扫描带有controller注解的，use-default-filters是取消默认扫描-->
+    <context:component-scan base-package="com.mmall.controller" annotation-config="true" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
     <!--编码配置-->
     <mvc:annotation-driven>
@@ -33,13 +35,28 @@
     </mvc:annotation-driven>
 
 
-
     <!-- 文件上传配置 -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="10485760"/> <!-- 上传的文件最大10M -->
         <property name="maxInMemorySize" value="4096" /> <!-- 上传的文件使用的内存块为4M -->
         <property name="defaultEncoding" value="UTF-8"></property>
     </bean>
+
+    <mvc:interceptors>
+        <!-- 在这里配置bean，与mvc:interceptor同级，所有的都会被拦截-->
+        <mvc:interceptor>
+            <!--manage/a.do 对应的path： /manage/*-->
+            <!--manage/b.do 对应的path： /manage/*-->
+            <!--manage/product/save.do 对应的path： /manage/**-->
+            <!--manage/order/detail.do 对应的path： /manage/**-->
+            <!--/manage/**是我们要拦截的位置-->
+            <mvc:mapping path="/manage/**"/>
+            <!--排除login.do，login.do不走拦截器-->
+            <!--<mvc:exclude-mapping path="/manage/user/login.do"/>-->
+            <bean class="com.mmall.controller.common.interceptor.AuthorityInterceptor" />
+        </mvc:interceptor>
+
+    </mvc:interceptors>
 
 
 </beans>
