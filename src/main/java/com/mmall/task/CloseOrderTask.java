@@ -32,6 +32,7 @@ public class CloseOrderTask {
     @Autowired
     private RedissonManager redissonManager;
 
+    //此方法是V2的优化，但是并不能完全解决V2的问题
     //当没有使用kill进程的方式关闭Tomcat，使用Tomcat的shutdown关闭时，会自动调用带有注解PreDestroy的方法。
     //但是如果需要关闭的锁特别多关闭Tomcat会很慢，往往会使用kill进程的方式关闭Tomcat，就不能调用此方法了
     @PreDestroy
@@ -122,10 +123,11 @@ public class CloseOrderTask {
         boolean getLock = false;
         try {
             //获取锁，waitTime获取锁时做多等待几秒，leaseTime几秒释放，TimeUnit.SECONDS单位秒
+            //waitTime不为0时，可能会出现两个Tomcat同时拿到分布式锁的问题，所以一般都要设为0
             if(getLock = lock.tryLock(0,50, TimeUnit.SECONDS)){
                 log.info("Redisson获取到分布式锁:{},ThreadName:{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK,Thread.currentThread().getName());
                 int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour","2"));
-//                iOrderService.closeOrder(hour);
+                iOrderService.closeOrder(hour);
             }else{
                 log.info("Redisson没有获取到分布式锁:{},ThreadName:{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK,Thread.currentThread().getName());
             }

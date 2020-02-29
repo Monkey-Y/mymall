@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!--<property name="LOG_HOME" value="${CATALINA_HOME}/logs"></property> log文件存放位置-->
     <!--打印到catalina.out,大于debug级别的都打印-->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoding>UTF-8</encoding>
@@ -48,11 +49,12 @@
     <logger name="com.mmall" additivity="false" level="INFO" >
         <appender-ref ref="mmall" />
         <appender-ref ref="console"/>
+        <appender-ref ref="error"/>
     </logger>
 
 
 
-    <!-- geelynote mybatis log 日志（可以打印执行的SQL语句） -->
+    <!-- mybatis log 日志（可以打印执行的SQL语句） -->
 
     <logger name="com.mmall.dao" level="DEBUG"/>
 
