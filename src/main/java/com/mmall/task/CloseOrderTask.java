@@ -1,16 +1,19 @@
 package com.mmall.task;
 
 import com.mmall.common.Const;
+import com.mmall.common.RedissonManager;
 import com.mmall.service.IOrderService;
 import com.mmall.util.PropertiesUtil;
 import com.mmall.util.RedisShardedPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName CloseOrderTask
@@ -26,15 +29,14 @@ public class CloseOrderTask {
     @Autowired
     private IOrderService iOrderService;
 
-//    @Autowired
-//    private RedissonManager redissonManager;
+    @Autowired
+    private RedissonManager redissonManager;
 
     //当没有使用kill进程的方式关闭Tomcat，使用Tomcat的shutdown关闭时，会自动调用带有注解PreDestroy的方法。
     //但是如果需要关闭的锁特别多关闭Tomcat会很慢，往往会使用kill进程的方式关闭Tomcat，就不能调用此方法了
     @PreDestroy
     public void delLock(){
         RedisShardedPoolUtil.del(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
-
     }
 
     /**
@@ -54,7 +56,7 @@ public class CloseOrderTask {
 
     /**
       * @Author Yangh
-      * @Description //TODO 避免了V1中的问题
+      * @Description //TODO 分布式锁实现关闭未支付订单，避免了V1中的问题。存在暴力关闭Tomcat时，锁没有关闭造成的死锁问题
       * @Date 2020/2/29 12:23
       * @param 
       * @return void
@@ -76,7 +78,7 @@ public class CloseOrderTask {
 
     /**
       * @Author Yangh
-      * @Description //TODO
+      * @Description //TODO 手动实现分布式锁实现关闭未支付订单，避免了V2中的问题。
       * @Date 2020/2/29 12:24
       * @param 
       * @return void
@@ -113,12 +115,36 @@ public class CloseOrderTask {
         log.info("关闭订单定时任务结束");
     }
 
-
+//    @Scheduled(cron="0 */1 * * * ?")
+    public void closeOrderTaskV4(){
+        //声明redission实例
+        RLock lock = redissonManager.getRedisson().getLock(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
+        boolean getLock = false;
+        try {
+            //获取锁，waitTime获取锁时做多等待几秒，leaseTime几秒释放，TimeUnit.SECONDS单位秒
+            if(getLock = lock.tryLock(0,50, TimeUnit.SECONDS)){
+                log.info("Redisson获取到分布式锁:{},ThreadName:{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK,Thread.currentThread().getName());
+                int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour","2"));
+//                iOrderService.closeOrder(hour);
+            }else{
+                log.info("Redisson没有获取到分布式锁:{},ThreadName:{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK,Thread.currentThread().getName());
+            }
+        } catch (InterruptedException e) {
+            log.error("Redisson分布式锁获取异常",e);
+        } finally {
+            if(!getLock){
+                return;
+            }
+            //释放锁
+            lock.unlock();
+            log.info("Redisson分布式锁释放锁");
+        }
+    }
 
 
     //设置锁的有效期
     private void closeOrder(String lockName){
-        RedisShardedPoolUtil.expire(lockName,50);//有效期50秒，防止死锁，这里设置50秒是方便debug，线上要改为5秒
+        RedisShardedPoolUtil.expire(lockName,5);//有效期50秒，防止死锁，这里设置50秒是方便debug，线上要改为5秒
         log.info("获取{},ThreadName:{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK,Thread.currentThread().getName());
         //关闭超过两小时还没付款的订单
         int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour","2"));

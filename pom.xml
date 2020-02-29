@@ -260,6 +260,7 @@
             <version>1.2.0.RELEASE</version>
         </dependency>
 
+        <!--redission及其依赖实现redis分布式锁-->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>

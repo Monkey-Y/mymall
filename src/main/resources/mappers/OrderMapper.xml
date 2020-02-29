@@ -243,9 +243,9 @@
     FROM mmall_order
     where status = #{status}
     <![CDATA[
-    and creat_time <= #{date}
+    and create_time <= #{date}
     ]]>
-    ORDER BY creat_time desc
+    ORDER BY create_time desc
   </select>
 
   <update id="closeOrderByOrderId" parameterType="int" >
