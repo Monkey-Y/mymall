@@ -31,7 +31,7 @@ public class ShippingController {
       * @Author Yangh
       * @Description //TODO 添加地址接口
       * @Date 2020/2/18 16:59
-      * @param session
+      * @param httpServletRequest
       * @param shipping
       * @return com.mmall.common.ServerResponse
     **/
@@ -55,7 +55,7 @@ public class ShippingController {
       * @Author Yangh
       * @Description //TODO 删除地址接口
       * @Date 2020/2/18 17:08
-      * @param session
+      * @param httpServletRequest
       * @param shippingId
       * @return com.mmall.common.ServerResponse
     **/
@@ -79,7 +79,7 @@ public class ShippingController {
       * @Author Yangh
       * @Description //TODO 修改地址接口
       * @Date 2020/2/18 17:09
-      * @param session
+      * @param httpServletRequest
       * @param shipping
       * @return com.mmall.common.ServerResponse
     **/
@@ -103,8 +103,8 @@ public class ShippingController {
       * @Author Yangh
       * @Description //TODO 查询收货地址详情接口
       * @Date 2020/2/18 17:14
-      * @param session
-  * @param shippingId
+      * @param httpServletRequest
+      * @param shippingId
       * @return com.mmall.common.ServerResponse<com.mmall.pojo.Shipping>
     **/
     @RequestMapping("select.do")
@@ -129,7 +129,7 @@ public class ShippingController {
       * @Date 2020/2/18 17:17
       * @param pageNum
       * @param pageSize
-      * @param session
+      * @param httpServletRequest
       * @return com.mmall.common.ServerResponse<com.github.pagehelper.PageInfo>
     **/
     @RequestMapping("list.do")
